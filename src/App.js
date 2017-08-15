@@ -2,24 +2,38 @@ import React, { Component } from 'react';
 import './App.css';
 import SearchForm from './Components/SearchForm';
 import GifList from './Components/GifList';
-
+import axios from 'axios'
 export default class App extends Component {
-  
+
   constructor() {
     super();
-  } 
+    this.state = {
+      gifs:[]
+    }
+  }
 
-  render() { 
+  componentDidMount(){
+    axios.get('http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC')
+      .then(dataResponse =>{
+        this.setState({gifs: dataResponse.data.data})
+
+      })
+      .catch(err => {
+        console.log('error fetching data and parsing data', err);
+      })
+  }
+
+  render() {
     return (
       <div>
         <div className="main-header">
           <div className="inner">
             <h1 className="main-title">GifSearch</h1>
-            <SearchForm />      
-          </div>   
-        </div>    
+            <SearchForm />
+          </div>
+        </div>
         <div className="main-content">
-          <GifList />
+          <GifList data={this.state.gifs} />
         </div>
       </div>
     );
